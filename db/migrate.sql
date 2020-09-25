@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS users (
 
 CREATE TABLE IF NOT EXISTS reports (
     id INTEGER PRIMARY KEY,
+    name VARCHAR(10),
     report TEXT NOT NULL,
-    UNIQUE(id)
+    UNIQUE(name)
 );
