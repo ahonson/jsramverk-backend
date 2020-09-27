@@ -83,7 +83,7 @@ db.run("INSERT INTO reports (name, report) VALUES (?, ?)",
 
 db.run("INSERT INTO reports (name, report) VALUES (?, ?)",
     "Kmom02",
-    "BACKEND: This is a link to my github account: https://github.com/ahonson/jsramverk-backend\nThis project was created with the following technologies: sqlite (5.0.0), express (4.17.1), bcryptjs (2.4.3). Check out package.json for a complete list of dependencies.\nRun npm install to create a node_modules directory, which contains all dependencies needed to run the project.\nnode app.js runs the project. npm start runs the project and updates itself when you make changes to the source code.\n", (err) => {
+    "BACKEND: This is a link to my github account: https://github.com/ahonson/jsramverk-backend\nThis project was created with the following technologies: sqlite (5.0.0), express (4.17.1), bcryptjs (2.4.3). Check out package.json for a complete list of dependencies.\nRun npm install to create a node_modules directory, which contains all dependencies needed to run the project.\nnode app.js runs the project. npm start runs the project and updates itself when you make changes to the source code.\n\nDet var ett väldigt svårt men nyttigt kursmoment. Arbetet med backend har öppnat upp en helt ny värld.\nAnrop till min POST/reports-route ska skickas tillsammans med ett giltigt token samt en icke-tom sträng. Strängen sparas i reports-tabellen i sqlite3.\nPOST/register sparar användarens inloggningsuppgifter i databasens users-tabell. POST/login skapar ett token som är giltigt i en timme. GET-routerna kan man komma åt utan inloggning och de returnerar data i json-format.", (err) => {
     if (err) {
         // returnera error
     }
