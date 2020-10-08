@@ -9,3 +9,6 @@ Run `npm install` to create a `node_modules` directory, which contains all depen
 ## Run the project
 
 `node app.js` runs the project. `npm start` runs the project and updates itself when you make changes to the source code.
+
+
+[![Build Status](https://travis-ci.com/ahonson/jsramverk-backend.svg?branch=master)](https://travis-ci.com/ahonson/jsramverk-backend)
