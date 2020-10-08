@@ -2,8 +2,14 @@ var express = require('express');
 var router = express.Router();
 
 require("dotenv").config();
-const sqlite3 = require('sqlite3').verbose();
-const db = new sqlite3.Database('./db/texts.sqlite');
+// const sqlite3 = require('sqlite3').verbose();
+// const db = new sqlite3.Database('./db/texts.sqlite');
+console.log("PROCESSENV: ", process.env.NODE_ENV);
+if (process.env.NODE_ENV === "test") {
+    console.log("JAAAAAAAAAAAAAAAAA");
+}
+const db = require("../db/database.js");
+console.log("MY INDEX DB: ", JSON.stringify(db));
 
 router.get('/', function(req, res, next) {
     let sql = "SELECT report FROM reports WHERE name = ?;";
@@ -48,8 +54,8 @@ router.post('/register', function(req, res, next) {
     const saltRounds = 10;
     const userEmail = req.body.email;
     const userPassword = req.body.password;
-    const sqlite3 = require('sqlite3').verbose();
-    const db = new sqlite3.Database('./db/texts.sqlite');
+    // const sqlite3 = require('sqlite3').verbose();
+    // const db = new sqlite3.Database('./db/texts.sqlite');
 
     console.log(userPassword, userEmail);
     bcrypt.hash(userPassword, saltRounds, function(err, hash) {
@@ -79,28 +85,28 @@ router.post('/login', function(req, res, next) {
     const bcrypt = require('bcryptjs');
     const userEmail = req.body.email;
     const userPassword = req.body.password;
-    const sqlite3 = require('sqlite3').verbose();
-    const db = new sqlite3.Database('./db/texts.sqlite');
+    // const sqlite3 = require('sqlite3').verbose();
+    // const db = new sqlite3.Database('./db/texts.sqlite');
     const sqlQuery = "SELECT password FROM users WHERE email = '" + userEmail + "';";
 
     db.get(sqlQuery, (err, row) => {
         if (err) {
             return console.error(err.message);
         } else if (!row) {
-            console.log("The row is empty.");
+            // console.log("The row is empty.");
             return
         }
         console.log(row, row.password);
         bcrypt.compare(userPassword, row.password, function(err, res1) {
         // res innehåller nu true eller false beroende på om det är rätt lösenord.
             if (res1) {
-                console.log("SAMMA - index");
-                console.log("?????????????????????????????????????????????");
+                // console.log("SAMMA - index");
+                // console.log("?????????????????????????????????????????????");
                 const jwt = require('jsonwebtoken');
                 const payload = { email: userEmail };
                 const secret = process.env.JWT_SECRET;
                 const token = jwt.sign(payload, secret, { expiresIn: '1h'});
-                console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", token);
+                // console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", token);
                 res.status(201).json({
                     data: {
                         msg: "Got a POST request",
@@ -108,7 +114,7 @@ router.post('/login', function(req, res, next) {
                     }
                 });
             } else {
-                console.log("NEJNEJNEJ - index");
+                // console.log("NEJNEJNEJ - index");
                 const token = "";
                 res.status(201).json({
                     data: {
@@ -133,26 +139,26 @@ router.post('/reports', function(req, res, next) {
         if (err) {
             // not a valid token
             myMessage = "Du är inte inloggad.";
-            console.log("Du är inte inloggad.");
+            // console.log("Du är inte inloggad.");
         } else {
             // valid token
             if (report && name) {
                 myMessage = "Du är inloggad. Din text har sparats i databasen.";
-                console.log(myMessage);
-                console.log(report);
+                // console.log(myMessage);
+                // console.log(report);
                 const sqlite3 = require('sqlite3').verbose();
                 const db = new sqlite3.Database('./db/texts.sqlite');
 
                 db.run("INSERT INTO reports (name, report) VALUES (?, ?)", [name, report], (err) => {
                     if (err) {
                         // returnera error
-                        console.log("--------------------------------");
-                        console.log(err);
+                        // console.log("--------------------------------");
+                        // console.log(err);
                         db.run("UPDATE reports SET report = ? WHERE name = ?", [report, name], (err) => {
                             if (err) {
                                 // returnera error
-                                console.log("::::::::::::::::::::::::::::::::");
-                                console.log(err);
+                                // console.log("::::::::::::::::::::::::::::::::");
+                                // console.log(err);
                             }
                             // returnera korrekt svar
                         });
@@ -161,7 +167,7 @@ router.post('/reports', function(req, res, next) {
                 });
             } else {
                 myMessage = "Tomma strängar sparas inte i databasen.";
-                console.log(myMessage);
+                // console.log(myMessage);
             }
         }
     });
