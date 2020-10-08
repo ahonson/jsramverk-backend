@@ -7,9 +7,7 @@ const hello = require('./routes/hello');
 
 // const sqlite3 = require('sqlite3').verbose();
 // const db = new sqlite3.Database('./db/texts.sqlite');
-const db = require("./db/database");
-console.log("MY little DB: ", db);
-
+// const db = require("./db/database");
 const app = express();
 const port = 1337;
 
@@ -43,6 +41,7 @@ app.use('/hello', hello);
 // Put this last
 app.use((req, res, next) => {
     var err = new Error("Not Found");
+
     err.status = 404;
     next(err);
 });

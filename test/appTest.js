@@ -1,12 +1,12 @@
+/* eslint-env node, mocha */
+
 process.env.NODE_ENV = 'test';
 
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const server = require('../app.js');
 const assert = require("chai").assert;
-const app = require("../app");
 const exempel = require("../routes/exempel");
-
 const db = require("../db/database.js");
 
 console.log("MY DB: ", db);
@@ -14,11 +14,10 @@ chai.should();
 
 chai.use(chaiHttp);
 
+const addera = exempel.addera(2, 3);
 
-addera = exempel.addera(2, 3);
-
-describe("Adding test", function(){
-    it("Check addition", function(){
+describe("Adding test", function() {
+    it("Check addition", function() {
         assert.equal(addera, 5);
     });
 });
@@ -26,12 +25,12 @@ describe("Adding test", function(){
 describe('Routes', () => {
     before(() => {
         db.run("INSERT INTO users (email, password) VALUES (?, ?)", "jo@jo.jo",
-        "$2a$10$vYiGTxMrFYDve3v5.bnAj.La2rkUa4cSZWXCj/ZwuDmkwgw6wCszC",
-        (err) => {
-            if (err) {
-                console.error("Could not insert user into db", err.message);
-            }
-        });
+            "$2a$10$vYiGTxMrFYDve3v5.bnAj.La2rkUa4cSZWXCj/ZwuDmkwgw6wCszC",
+            (err) => {
+                if (err) {
+                    console.error("Could not insert user into db", err.message);
+                }
+            });
     });
 
     describe('GET /reports/week/1', () => {
@@ -41,10 +40,7 @@ describe('Routes', () => {
                 .end((err, res) => {
                     res.should.have.status(200);
                     res.body.should.be.an("object");
-                    res.body.should.be.an("object").that.has.all.keys('report');;
-                    // res.body.data.should.be.an("array");
-                    // res.body.data.length.should.be.above(0);
-
+                    res.body.should.be.an("object").that.has.all.keys('report');
                     done();
                 });
         });
@@ -57,10 +53,7 @@ describe('Routes', () => {
                 .end((err, res) => {
                     res.should.have.status(200);
                     res.body.should.be.an("object");
-                    res.body.should.be.an("object").that.has.all.keys('report');;
-                    // res.body.data.should.be.an("array");
-                    // res.body.data.length.should.be.above(0);
-
+                    res.body.should.be.an("object").that.has.all.keys('report');
                     done();
                 });
         });
@@ -74,10 +67,7 @@ describe('Routes', () => {
                 .end((err, res) => {
                     res.should.have.status(200);
                     res.body.should.be.an("object");
-                    res.body.should.be.an("object").that.has.all.keys('report');;
-                    // res.body.data.should.be.a("string");
-                    // res.body.data.length.should.be.above(0);
-
+                    res.body.should.be.an("object").that.has.all.keys('report');
                     done();
                 });
         });
@@ -88,14 +78,13 @@ describe('Routes', () => {
             let credentials = {
                 email: "jo@jo.jo",
                 password: "pass123"
-            }
+            };
+
             chai.request(server)
                 .post("/login")
                 .send(credentials)
                 .end((err, res) => {
                     res.should.have.status(201);
-                    // res.body.should.be.an("object");
-                    // res.body.should.be.an("object").that.has.all.keys('data');;
                     done();
                 });
         });
@@ -106,14 +95,13 @@ describe('Routes', () => {
             let credentials = {
                 email: "do@do.do",
                 password: "pass123"
-            }
+            };
+
             chai.request(server)
                 .post("/register")
                 .send(credentials)
                 .end((err, res) => {
                     res.should.have.status(201);
-                    // res.body.should.be.an("object");
-                    // res.body.should.be.an("object").that.has.all.keys('data');;
                     done();
                 });
         });
@@ -126,10 +114,7 @@ describe('Routes', () => {
                 .end((err, res) => {
                     res.should.have.status(200);
                     res.body.should.be.an("object");
-                    res.body.should.be.an("object").that.has.all.keys('data');;
-                    // res.body.data.should.be.a("string");
-                    // res.body.data.length.should.be.above(0);
-
+                    res.body.should.be.an("object").that.has.all.keys('data');
                     done();
                 });
         });
@@ -142,10 +127,7 @@ describe('Routes', () => {
                 .end((err, res) => {
                     res.should.have.status(200);
                     res.body.should.be.an("object");
-                    res.body.should.be.an("object").that.has.all.keys('data');;
-                    // res.body.data.should.be.a("string");
-                    // res.body.data.length.should.be.above(0);
-
+                    res.body.should.be.an("object").that.has.all.keys('data');
                     done();
                 });
         });
@@ -186,19 +168,19 @@ describe('Routes', () => {
 
     after(() => {
         db.run("DELETE FROM users WHERE email = (?)",
-        "jo@jo.jo",
-        (err) => {
-            if (err) {
-                console.error("Could not insert user into db", err.message);
-            }
-        });
+            "jo@jo.jo",
+            (err) => {
+                if (err) {
+                    console.error("Could not insert user into db", err.message);
+                }
+            });
 
         db.run("DELETE FROM users WHERE email = (?)",
-        "do@do.do",
-        (err) => {
-            if (err) {
-                console.error("Could not insert user into db", err.message);
-            }
-        });
+            "do@do.do",
+            (err) => {
+                if (err) {
+                    console.error("Could not insert user into db", err.message);
+                }
+            });
     });
 });

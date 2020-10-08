@@ -1,5 +1,5 @@
 module.exports = {
-    addera: function(x, y){
+    addera: function(x, y) {
         return x + y;
     }
-}
+};

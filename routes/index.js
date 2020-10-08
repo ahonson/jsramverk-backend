@@ -4,12 +4,7 @@ var router = express.Router();
 require("dotenv").config();
 // const sqlite3 = require('sqlite3').verbose();
 // const db = new sqlite3.Database('./db/texts.sqlite');
-console.log("PROCESSENV: ", process.env.NODE_ENV);
-if (process.env.NODE_ENV === "test") {
-    console.log("JAAAAAAAAAAAAAAAAA");
-}
 const db = require("../db/database.js");
-console.log("MY INDEX DB: ", JSON.stringify(db));
 
 router.get('/', function(req, res, next) {
     let sql = "SELECT report FROM reports WHERE name = ?;";
@@ -61,17 +56,17 @@ router.post('/register', function(req, res, next) {
     bcrypt.hash(userPassword, saltRounds, function(err, hash) {
         // spara lösenord i databasen.
         db.run("INSERT INTO users (email, password) VALUES (?, ?);",
-        userEmail,
-        hash, (err) => {
-            if (err) {
+            userEmail,
+            hash, (err) => {
+                if (err) {
                 // returnera error
-                console.log("DET GICK INTE");
-                return console.error(err.message);
-            } else {
+                    console.log("DET GICK INTE");
+                    return console.error(err.message);
+                } else {
                 // returnera korrekt svar
-                console.log("DET GICK HYFSAT BRA");
-            }
-        });
+                    console.log("DET GICK HYFSAT BRA");
+                }
+            });
     });
 
     res.status(201).json({
@@ -94,7 +89,7 @@ router.post('/login', function(req, res, next) {
             return console.error(err.message);
         } else if (!row) {
             // console.log("The row is empty.");
-            return
+            return;
         }
         console.log(row, row.password);
         bcrypt.compare(userPassword, row.password, function(err, res1) {
@@ -106,7 +101,7 @@ router.post('/login', function(req, res, next) {
                 const payload = { email: userEmail };
                 const secret = process.env.JWT_SECRET;
                 const token = jwt.sign(payload, secret, { expiresIn: '1h'});
-                // console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", token);
+
                 res.status(201).json({
                     data: {
                         msg: "Got a POST request",
@@ -114,8 +109,8 @@ router.post('/login', function(req, res, next) {
                     }
                 });
             } else {
-                // console.log("NEJNEJNEJ - index");
                 const token = "";
+
                 res.status(201).json({
                     data: {
                         msg: "Got a failed POST request",
@@ -135,7 +130,7 @@ router.post('/reports', function(req, res, next) {
     const report = req.body.report;
     var myMessage;
 
-    jwt.verify(token, process.env.JWT_SECRET, function(err, decoded) {
+    jwt.verify(token, process.env.JWT_SECRET, function(err) {
         if (err) {
             // not a valid token
             myMessage = "Du är inte inloggad.";
@@ -149,22 +144,23 @@ router.post('/reports', function(req, res, next) {
                 const sqlite3 = require('sqlite3').verbose();
                 const db = new sqlite3.Database('./db/texts.sqlite');
 
-                db.run("INSERT INTO reports (name, report) VALUES (?, ?)", [name, report], (err) => {
-                    if (err) {
+                db.run("INSERT INTO reports (name, report) VALUES (?, ?)",
+                    [name, report], (err) => {
+                        if (err) {
                         // returnera error
                         // console.log("--------------------------------");
                         // console.log(err);
-                        db.run("UPDATE reports SET report = ? WHERE name = ?", [report, name], (err) => {
-                            if (err) {
-                                // returnera error
-                                // console.log("::::::::::::::::::::::::::::::::");
-                                // console.log(err);
-                            }
-                            // returnera korrekt svar
-                        });
-                    }
-                    // returnera korrekt svar
-                });
+                            db.run("UPDATE reports SET report = ? WHERE name = ?",
+                                [report, name], (err) => {
+                                    if (err) {
+                                    // returnera error
+                                    // console.log(err);
+                                    }
+                                // returnera korrekt svar
+                                });
+                        }
+                        // returnera korrekt svar
+                    });
             } else {
                 myMessage = "Tomma strängar sparas inte i databasen.";
                 // console.log(myMessage);
@@ -206,14 +202,15 @@ router.delete('/user', function(req, res, next) {
 });
 
 router.post("/reports",
-    (req, res, next) => checkToken(req, res, next),
-    (req, res) => reports.addReport(res, req.body)
+    (req, res, next) => checkToken(req, res, next)
+    // (req, res) => reports.addReport(res, req.body)
 );
 
 function checkToken(req, res, next) {
+    const jwt = require('jsonwebtoken');
     const token = req.headers['x-access-token'];
 
-    jwt.verify(token, process.env.JWT_SECRET, function(err, decoded) {
+    jwt.verify(token, process.env.JWT_SECRET, function(err) {
         if (err) {
             // send error response
         }
